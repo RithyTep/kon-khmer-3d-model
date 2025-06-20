@@ -195,7 +195,7 @@ export default function Form({ isLoading, onSubmit, onOpenOptions }: FormProps) 
               </div>
 
               <AutoResizeTextarea
-                placeholder="បង្កើតម៉ូដែល 3D ដ៏អស្ចារ្យ..."
+                placeholder="បង្កើតម៉ូដែល 3D"
                 className="flex-1 bg-transparent border-0 focus:ring-0 text-white placeholder:text-gray-400 py-2 lg:py-3 px-3 lg:px-4 resize-none text-sm lg:text-base font-medium"
                 {...form.register("prompt")}
                 onFocus={handleFocus}
@@ -205,17 +205,18 @@ export default function Form({ isLoading, onSubmit, onOpenOptions }: FormProps) 
               />
 
               <div>
-                <Button
-                  type="submit"
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-xl h-10 w-10 lg:h-12 lg:w-12 p-0 flex items-center justify-center transition-all duration-300 hover:scale-110 neon-glow"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Sparkles className="h-4 w-4 lg:h-5 lg:w-5 animate-spin" />
-                  ) : (
-                    <ArrowUp className="h-4 w-4 lg:h-5 lg:w-5" />
-                  )}
-                </Button>
+          <Button
+  type="submit"
+  className="bg-white from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black rounded-xl h-10 w-10 lg:h-12 lg:w-12 p-0 flex items-center justify-center transition-all duration-300 hover:scale-105 neon-glow"
+  disabled={isLoading}
+>
+  {isLoading ? (
+    <Sparkles className="h-4 w-4 lg:h-5 lg:w-5 animate-spin" />
+  ) : (
+    <ArrowUp className="h-4 w-4 lg:h-5 lg:w-5" />
+  )}
+</Button>
+
               </div>
             </div>
           </div>

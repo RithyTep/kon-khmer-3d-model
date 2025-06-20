@@ -32,6 +32,7 @@ export default function Rodin() {
     material: "PBR" as const,
   })
   const [isDefaultModel, setIsDefaultModel] = useState(true)
+  const [isAppReady, setIsAppReady] = useState(false)
 
   // Prevent body scroll on mobile
   useEffect(() => {
@@ -45,6 +46,15 @@ export default function Rodin() {
       }
     }
   }, [isMobile])
+
+  // Initialize app with delay to prevent flickering
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAppReady(true)
+    }, 300) // Longer delay to ensure everything is loaded
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleOptionsChange = (newOptions: any) => {
     setOptions(newOptions)
@@ -86,6 +96,7 @@ export default function Rodin() {
               setDownloadUrl(glbFile.url)
               setIsLoading(false)
               setShowPromptContainer(false)
+              setIsDefaultModel(false)
             } else {
               setError("រកមិនឃើញឯកសារ GLB ក្នុងលទ្ធផល")
               setIsLoading(false)
@@ -170,6 +181,8 @@ export default function Rodin() {
 
   const handleBack = () => {
     setShowPromptContainer(true)
+    setModelUrl("/models/model.glb")
+    setIsDefaultModel(true)
   }
 
   const handleStartGeneration = () => {
@@ -190,11 +203,28 @@ export default function Rodin() {
     </div>
   )
 
+  // Show loading screen while app initializes
+  if (!isAppReady) {
+    return (
+      <div className="loading-screen">
+        <div className="glass-strong rounded-xl p-8">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="loading-spinner"></div>
+            <div className="text-center">
+              <h2 className="text-xl text-white font-semibold mb-2">កូនខ្មែរ AI 3D Model</h2>
+              <p className="text-gray-400">ដំណើរការដោយ Rithy Tep</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden tech-grid bg-black"> {/* Added bg-black */}
+    <div className="relative h-[100dvh] w-full overflow-hidden tech-grid bg-black">
       {/* Full-screen canvas */}
       <div className="absolute inset-0 z-0">
-        <ModelViewer modelUrl={isLoading ? null : modelUrl} />
+        <ModelViewer modelUrl={modelUrl} />
       </div>
 
       {/* Overlay UI */}
@@ -203,27 +233,25 @@ export default function Rodin() {
         <div className="absolute top-0 left-0 right-0 p-4 lg:p-6 pointer-events-auto">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
             {/* Logo Section */}
-            <div className="bg-gray-900/70 backdrop-blur-md rounded-2xl p-4 lg:p-6 max-w-md lg:max-w-lg border border-gray-700"> {/* Modified glass-strong */}
+            <div className="bg-gray-900/70 backdrop-blur-md rounded-2xl p-4 lg:p-6 max-w-md lg:max-w-lg border border-gray-700">
               <div className="flex items-center space-x-3 mb-2">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-gray-700 flex items-center justify-center"> {/* Changed gradient */}
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-gray-700 flex items-center justify-center">
                   <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
                 </div>
-                <h1 className="text-xl lg:text-3xl text-white font-bold tracking-tight"> {/* Removed neon-text */}
-                  កូនខ្មែរ AI Generate 3D
-                </h1>
+                <h1 className="text-xl lg:text-3xl text-white font-bold tracking-tight">កូនខ្មែរ AI 3D Model</h1>
               </div>
               <div className="space-y-1">
-                <p className="text-gray-300 text-xs lg:text-sm font-medium flex items-center"> {/* Changed text color */}
-                  <Zap className="w-3 h-3 lg:w-4 lg:h-4 mr-1 text-gray-300" /> {/* Changed text color */}
+                <p className="text-gray-300 text-xs lg:text-sm font-medium flex items-center">
+                  <Zap className="w-3 h-3 lg:w-4 lg:h-4 mr-1 text-gray-300" />
                   ដំណើរការដោយ Rithy Tep
                 </p>
-                <p className="text-gray-500 text-xs">Version 1.0.0 • Advanced AI Technology</p> {/* Changed text color */}
+                <p className="text-gray-500 text-xs">Version 1.0.0</p>
               </div>
             </div>
 
             {/* Links Section - Desktop */}
             {!isMobile && (
-              <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-4 border border-gray-700"> {/* Modified glass */}
+              <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-4 border border-gray-700">
                 <ExternalLinks />
               </div>
             )}
@@ -236,7 +264,7 @@ export default function Rodin() {
         {/* Error message */}
         {error && (
           <div className="absolute top-32 lg:top-40 left-1/2 transform -translate-x-1/2 max-w-sm lg:max-w-md mx-4 pointer-events-auto">
-            <div className="bg-red-900/20 backdrop-blur-md rounded-xl p-4 border border-red-500/30"> {/* Modified glass-strong */}
+            <div className="bg-red-900/20 backdrop-blur-md rounded-xl p-4 border border-red-500/30">
               <p className="text-red-300 text-sm lg:text-base text-center">{error}</p>
             </div>
           </div>
@@ -249,16 +277,16 @@ export default function Rodin() {
               {isDefaultModel ? (
                 <Button
                   onClick={handleStartGeneration}
-                  className="bg-gray-800/70 backdrop-blur-md hover:bg-gray-700/70 text-white rounded-2xl px-6 lg:px-8 py-3 lg:py-4 flex items-center gap-3 text-base lg:text-lg font-medium transition-all duration-300 hover:scale-105 border border-gray-600" // Modified styles
+                  className="bg-gray-800/70 backdrop-blur-md hover:bg-gray-700/70 text-white rounded-2xl px-6 lg:px-8 py-3 lg:py-4 flex items-center gap-3 text-base lg:text-lg font-medium transition-all duration-300 hover:scale-105 border border-gray-600"
                 >
                   <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-                  <span>ចាប់ផ្តើមបង្កើត</span>
+                  <span>ចាប់ផ្តើមបង្កើត 3D Model</span>
                 </Button>
               ) : (
                 <>
                   <Button
                     onClick={handleBack}
-                    className="bg-gray-900/70 backdrop-blur-md hover:bg-gray-800/70 text-white border border-gray-700 rounded-xl px-4 lg:px-6 py-2 lg:py-3 flex items-center gap-2 transition-all duration-300 hover:scale-105" // Modified styles
+                    className="bg-gray-900/70 backdrop-blur-md hover:bg-gray-800/70 text-white border border-gray-700 rounded-xl px-4 lg:px-6 py-2 lg:py-3 flex items-center gap-2 transition-all duration-300 hover:scale-105"
                   >
                     <ArrowLeft className="h-4 w-4 lg:h-5 lg:w-5" />
                     <span className="text-sm lg:text-base">ត្រលប់ក្រោយ</span>
@@ -266,7 +294,7 @@ export default function Rodin() {
 
                   <Button
                     onClick={handleDownload}
-                    className="bg-gray-700 hover:bg-gray-600 text-white rounded-xl px-4 lg:px-6 py-2 lg:py-3 flex items-center gap-2 transition-all duration-300 hover:scale-105 border border-gray-600" // Modified styles and removed neon-glow
+                    className="bg-gray-700 hover:bg-gray-600 text-white rounded-xl px-4 lg:px-6 py-2 lg:py-3 flex items-center gap-2 transition-all duration-300 hover:scale-105 border border-gray-600"
                   >
                     <Download className="h-4 w-4 lg:h-5 lg:w-5" />
                     <span className="text-sm lg:text-base font-medium">ទាញយក</span>
@@ -285,7 +313,7 @@ export default function Rodin() {
             {/* Links below prompt on mobile */}
             {isMobile && (
               <div className="mt-4 flex justify-center">
-                <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-3 border border-gray-700"> {/* Modified glass */}
+                <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-3 border border-gray-700">
                   <ExternalLinks />
                 </div>
               </div>
