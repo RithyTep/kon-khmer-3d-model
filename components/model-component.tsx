@@ -33,8 +33,10 @@ export default function ModelComponent({ url, scale }: ModelComponentProps) {
 
   useEffect(() => {
     // Adjust camera position based on device
-    const cameraDistance = isMobile ? 8 : 5
-    camera.position.set(0, 0, cameraDistance)
+    if (typeof window !== "undefined") {
+      const cameraDistance = isMobile ? 8 : 5
+      camera.position.set(0, 0, cameraDistance)
+    }
   }, [url, camera, isMobile])
 
   useEffect(() => {

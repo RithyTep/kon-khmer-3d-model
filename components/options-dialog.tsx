@@ -43,21 +43,6 @@ export default function OptionsDialog({ open, onOpenChange, options, onOptionsCh
     })
   }
 
-  // Add this helper function at the top of the component, before the return statement
-  const getQualityTimeEstimate = (quality: string) => {
-    const estimates = {
-      "extra-low": "30-45s",
-      low: "45-60s",
-      medium: "60-90s",
-      high: "90-120s",
-    }
-    return estimates[quality as keyof typeof estimates] || "60-90s"
-  }
-
-  const getTierTimeEstimate = (tier: string) => {
-    return tier === "Regular" ? "+20% time" : "Faster"
-  }
-
   const content = (
     <div className="py-2">
       <Tabs defaultValue="basic" className="w-full">
@@ -80,32 +65,19 @@ export default function OptionsDialog({ open, onOpenChange, options, onOptionsCh
                 </SelectTrigger>
                 <SelectContent className="bg-black border-[rgba(255,255,255,0.12)] text-white">
                   <SelectItem value="high" className="tracking-normal hover:bg-[#111111] focus:bg-[#111111]">
-                    <div className="flex justify-between items-center w-full">
-                      <span>ខ្ពស់ (50k)</span>
-                      <span className="text-xs text-gray-400 ml-2">90-120s</span>
-                    </div>
+                    ខ្ពស់ (50k)
                   </SelectItem>
                   <SelectItem value="medium" className="tracking-normal hover:bg-[#111111] focus:bg-[#111111]">
-                    <div className="flex justify-between items-center w-full">
-                      <span>មធ្យម (18k)</span>
-                      <span className="text-xs text-gray-400 ml-2">60-90s</span>
-                    </div>
+                    មធ្យម (18k)
                   </SelectItem>
                   <SelectItem value="low" className="tracking-normal hover:bg-[#111111] focus:bg-[#111111]">
-                    <div className="flex justify-between items-center w-full">
-                      <span>ទាប (8k)</span>
-                      <span className="text-xs text-gray-400 ml-2">45-60s</span>
-                    </div>
+                    ទាប (8k)
                   </SelectItem>
                   <SelectItem value="extra-low" className="tracking-normal hover:bg-[#111111] focus:bg-[#111111]">
-                    <div className="flex justify-between items-center w-full">
-                      <span>ទាបបំផុត (4k)</span>
-                      <span className="text-xs text-gray-400 ml-2">30-45s</span>
-                    </div>
+                    ទាបបំផុត (4k)
                   </SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-xs text-gray-500">ពេលវេលាប៉ាន់ស្មាន: {getQualityTimeEstimate(localOptions.quality)}</p>
             </div>
 
             <div className="space-y-2">
@@ -215,33 +187,16 @@ export default function OptionsDialog({ open, onOpenChange, options, onOptionsCh
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Regular" id="regular" className="border-white text-white" />
                 <Label htmlFor="regular" className="text-white tracking-normal">
-                  <div>
-                    <div>ធម្មតា (គុណភាព)</div>
-                    <div className="text-xs text-gray-400">+20% ពេលវេលា</div>
-                  </div>
+                  ធម្មតា (គុណភាព)
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Sketch" id="sketch" className="border-white text-white" />
                 <Label htmlFor="sketch" className="text-white tracking-normal">
-                  <div>
-                    <div>គំនូរព្រាង (ល្បឿន)</div>
-                    <div className="text-xs text-gray-400">លឿនជាង</div>
-                  </div>
+                  គំនូរព្រាង (ល្បឿន)
                 </Label>
               </div>
             </RadioGroup>
-          </div>
-
-          <div className="mt-6 p-3 bg-black/30 rounded-lg border border-white/10">
-            <div className="text-center">
-              <p className="text-white text-sm font-medium mb-1">ពេលវេលាប៉ាន់ស្មាន</p>
-              <p className="text-cyan-400 text-lg font-mono">{getQualityTimeEstimate(localOptions.quality)}</p>
-              <p className="text-xs text-gray-400 mt-1">
-                {localOptions.tier === "Regular" ? "គុណភាពខ្ពស់ (+20% ពេលវេលា)" : "ល្បឿនលឿន"}
-                {localOptions.use_hyper && " • Hyper Mode (+30% ពេលវេលា)"}
-              </p>
-            </div>
           </div>
         </TabsContent>
       </Tabs>
