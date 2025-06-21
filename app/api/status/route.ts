@@ -11,8 +11,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing subscription_key" }, { status: 400 })
     }
 
-    console.log("Checking status for subscription_key:", subscription_key)
-
     const response = await fetch("https://hyperhuman.deemos.com/api/v2/status", {
       method: "POST",
       headers: {
@@ -22,36 +20,18 @@ export async function POST(request: Request) {
       body: JSON.stringify({ subscription_key }),
     })
 
-    console.log("Status API Response status:", response.status)
-
     if (!response.ok) {
       const errorText = await response.text()
-      console.error("Status API Error Response:", errorText)
       return NextResponse.json(
         { error: `Status check failed: ${response.status}`, details: errorText },
         { status: response.status },
       )
     }
 
-    // Check if response is JSON
-    const contentType = response.headers.get("content-type")
-    if (!contentType || !contentType.includes("application/json")) {
-      const responseText = await response.text()
-      console.error("Non-JSON status response:", responseText)
-      return NextResponse.json(
-        { error: "Status API returned non-JSON response", details: responseText },
-        { status: 502 },
-      )
-    }
-
     const data = await response.json()
-    console.log("Status API Success Response:", data)
     return NextResponse.json(data)
   } catch (error) {
     console.error("Error in Status API route:", error)
-    return NextResponse.json(
-      { error: "Failed to check status", details: error instanceof Error ? error.message : String(error) },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: "Failed to check status" }, { status: 500 })
   }
 }
