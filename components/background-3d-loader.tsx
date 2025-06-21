@@ -1,5 +1,4 @@
 "use client"
-
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, Environment, Float, Text3D, Center } from "@react-three/drei"
 import { Suspense, useRef, useMemo } from "react"
@@ -68,7 +67,7 @@ function Loading3DText() {
     <group ref={textRef}>
       <Center>
         <Text3D
-          font="/fonts/Geist_Bold.json"
+          font="https://threejs.org/examples/fonts/helvetiker_bold.typeface.json"
           size={0.8}
           height={0.1}
           curveSegments={12}
