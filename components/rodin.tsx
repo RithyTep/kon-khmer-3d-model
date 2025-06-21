@@ -184,7 +184,7 @@ export default function Rodin() {
   }
 
   const handleDownload = () => {
-    if (downloadUrl) {
+    if (downloadUrl && typeof window !== "undefined") {
       window.open(downloadUrl, "_blank")
     }
   }

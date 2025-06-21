@@ -170,7 +170,7 @@ export default function Background3DLoader() {
           alpha: true,
           powerPreference: "high-performance",
         }}
-        dpr={Math.min(window.devicePixelRatio, 2)}
+        dpr={typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 2) : 1}
       >
         <Suspense fallback={null}>
           <Background3DScene />
