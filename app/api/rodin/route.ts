@@ -120,6 +120,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: errorMessage, details: errorText }, { status: response.status })
     }
 
+    // Check if response is JSON
+    const contentType = response.headers.get("content-type")
+    if (!contentType || !contentType.includes("application/json")) {
+      const responseText = await response.text()
+      console.error("Non-JSON API response:", responseText)
+      return NextResponse.json(
+        { error: "External API returned non-JSON response", details: responseText },
+        { status: 502 },
+      )
+    }
+
     const data = await response.json()
     console.log("API Success Response:", data)
 
