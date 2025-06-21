@@ -55,55 +55,22 @@ export default function Form({ isLoading, onSubmit, onOpenOptions }: FormProps) 
   const addImages = (files: File[]) => {
     if (files.length === 0) return
 
-    // Clear any previous errors
-    setError(null)
-
-    // Validate files
-    const validFiles: File[] = []
-    const errors: string[] = []
-
-    for (const file of files) {
-      // Check file type
-      if (!file.type.startsWith("image/")) {
-        errors.push(`${file.name} is not a valid image file`)
-        continue
-      }
-
-      // Check file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        errors.push(`${file.name} is too large (max 10MB)`)
-        continue
-      }
-
-      validFiles.push(file)
-    }
-
-    if (errors.length > 0) {
-      setError(errors.join(", "))
-      return
-    }
-
     const currentImages = form.getValues("images") || []
-    const totalImages = currentImages.length + validFiles.length
+    const totalImages = currentImages.length + files.length
 
     if (totalImages > 5) {
       setError("អ្នកអាចបញ្ចូលរូបភាពបានអតិបរមា 5 រូប")
       const allowedNewImages = 5 - currentImages.length
-      validFiles.splice(allowedNewImages)
+      files = files.slice(0, allowedNewImages)
 
-      if (validFiles.length === 0) return
+      if (files.length === 0) return
     }
 
-    try {
-      const newPreviewUrls = validFiles.map((file) => URL.createObjectURL(file))
-      const updatedImages = [...currentImages, ...validFiles]
+    const newPreviewUrls = files.map((file) => URL.createObjectURL(file))
+    const updatedImages = [...currentImages, ...files]
 
-      setPreviewUrls([...previewUrls, ...newPreviewUrls])
-      form.setValue("images", updatedImages)
-    } catch (err) {
-      setError("Failed to process images. Please try again.")
-      console.error("Error processing images:", err)
-    }
+    setPreviewUrls([...previewUrls, ...newPreviewUrls])
+    form.setValue("images", updatedImages)
   }
 
   const removeImage = (index: number) => {
@@ -117,11 +84,6 @@ export default function Form({ isLoading, onSubmit, onOpenOptions }: FormProps) 
 
     setPreviewUrls(newPreviewUrls)
     form.setValue("images", newImages)
-
-    // Clear error if we're now within limits
-    if (error && newImages.length <= 5) {
-      setError(null)
-    }
   }
 
   const triggerFileInput = () => {
@@ -179,18 +141,9 @@ export default function Form({ isLoading, onSubmit, onOpenOptions }: FormProps) 
     }
   }
 
-  const handleFormSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setError(null)
-      await onSubmit(values)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred")
-    }
-  }
-
   return (
     <UIForm {...form}>
-      <form ref={formRef} onSubmit={form.handleSubmit(handleFormSubmit)} className="relative">
+      <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="relative">
         <div
           ref={dropAreaRef}
           className={cn(
@@ -252,17 +205,18 @@ export default function Form({ isLoading, onSubmit, onOpenOptions }: FormProps) 
               />
 
               <div>
-                <Button
-                  type="submit"
-                  className="bg-white from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black rounded-xl h-10 w-10 lg:h-12 lg:w-12 p-0 flex items-center justify-center transition-all duration-300 hover:scale-105 neon-glow"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Sparkles className="h-4 w-4 lg:h-5 lg:w-5 animate-spin" />
-                  ) : (
-                    <ArrowUp className="h-4 w-4 lg:h-5 lg:w-5" />
-                  )}
-                </Button>
+          <Button
+  type="submit"
+  className="bg-white from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black rounded-xl h-10 w-10 lg:h-12 lg:w-12 p-0 flex items-center justify-center transition-all duration-300 hover:scale-105 neon-glow"
+  disabled={isLoading}
+>
+  {isLoading ? (
+    <Sparkles className="h-4 w-4 lg:h-5 lg:w-5 animate-spin" />
+  ) : (
+    <ArrowUp className="h-4 w-4 lg:h-5 lg:w-5" />
+  )}
+</Button>
+
               </div>
             </div>
           </div>
