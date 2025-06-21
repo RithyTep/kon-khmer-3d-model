@@ -322,14 +322,6 @@ export default function Rodin() {
           <div className="absolute bottom-4 lg:bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-sm lg:max-w-4xl px-4 pointer-events-auto">
             <Form isLoading={isLoading} onSubmit={handleSubmit} onOpenOptions={() => setShowOptions(true)} />
 
-            {/* Links below prompt on mobile */}
-            {isMobile && (
-              <div className="mt-4 flex justify-center">
-                <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-3 border border-gray-700">
-                  <ExternalLinks />
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
